@@ -1,0 +1,730 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;--white:#fff;--bd:#e0ddd6;--text:#1a1a1a;--mu:#888;--fa:#bbb;
+  --gr:#00a060;--grl:#eaf5f0;--grb:rgba(0,160,96,0.18);
+  --bl:#1a3a5c;--bll:#e8f0f8;--blb:rgba(26,58,92,0.18);
+  --or:#c97c10;--orl:#fef8ee;
+  --pu:#6d28d9;--pul:#f3eeff;--pub:rgba(109,40,217,0.18);
+  --re:#9b2335;--rel:#fdf0f2;
+  --go:#b07800;--gol:#fffbe6;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes sIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.app{border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:var(--bg)}
+
+.modebar{background:var(--white);border-bottom:1px solid var(--bd);display:flex;gap:0;flex-shrink:0}
+.mbtab{padding:10px 22px;font-size:12px;font-family:inherit;cursor:pointer;border:none;background:transparent;color:var(--mu);border-bottom:2px solid transparent;transition:all 0.15s;font-weight:500}
+.mbtab.on{color:var(--text);border-bottom-color:var(--gr);background:var(--white)}
+
+.view{display:none}
+.view.on{display:flex;flex-direction:column}
+
+.topbar{background:var(--white);border-bottom:1px solid var(--bd);padding:9px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;flex-shrink:0}
+.tb-brand-sub{font-size:9px;letter-spacing:3px;color:var(--mu);text-transform:uppercase}
+.tb-brand{font-family:'DM Serif Display',serif;font-size:15px;color:var(--text)}
+.tb-brand em{color:var(--gr);font-style:italic}
+.tb-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pbar-wrap{text-align:right}
+.pbar-lbl{font-size:11px;color:var(--mu);margin-bottom:3px}
+.pbar-track{width:140px;height:4px;background:var(--bd);border-radius:2px;overflow:hidden}
+.pbar-fill{height:100%;background:var(--gr);border-radius:2px}
+.tbtn{padding:5px 11px;border-radius:5px;font-size:11px;font-family:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--white);color:var(--mu);font-weight:500}
+.tbtn-gr{background:var(--gr);color:#fff;border:none;font-weight:600}
+.tbtn-bl{background:var(--bl);color:#fff;border:none;font-weight:600;display:flex;align-items:center;gap:5px}
+.play{width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:7px solid #fff;display:inline-block}
+
+.body{display:flex;overflow:hidden;height:520px}
+
+.sidebar{width:272px;flex-shrink:0;border-right:1px solid var(--bd);background:var(--white);overflow-y:auto;padding:12px 8px}
+.stage-hd{font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:600;padding-left:7px;border-left:3px solid;margin-bottom:6px;margin-top:12px}
+.stage-hd:first-of-type{margin-top:0}
+.ag{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;border:1px solid var(--bd);margin-bottom:3px;cursor:pointer;background:var(--white);transition:all 0.12s}
+.ag.done{border-color:#d4eddf;background:#f9fdf9}
+.ag.active{border-color:var(--active-ac,#00a060);background:rgba(0,160,96,0.05)}
+.ag-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0;border:2px solid}
+.ag-name{font-size:11px;color:var(--text);line-height:1.3;margin-bottom:2px}
+.ag-tags{display:flex;gap:3px;flex-wrap:wrap}
+.tag{font-size:8px;padding:1px 5px;border-radius:3px;font-weight:500}
+.ag-run{padding:2px 7px;border-radius:4px;border:none;font-size:9px;font-family:inherit;font-weight:600;cursor:pointer}
+.sb-cta{background:linear-gradient(135deg,var(--bll),#eaf2fb);border:1px solid var(--blb);border-radius:8px;padding:12px 13px;text-align:center;margin-top:8px}
+.sb-cta-lbl{font-size:8px;letter-spacing:2px;color:var(--bl);text-transform:uppercase;font-weight:700;margin-bottom:4px}
+.sb-cta-body{font-size:11px;color:var(--text);margin-bottom:9px;line-height:1.45}
+.sb-cta-btn{width:100%;padding:7px;background:var(--bl);color:#fff;border:none;border-radius:5px;font-size:11px;font-family:inherit;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+
+.detail{flex:1;overflow-y:auto;padding:20px 24px;background:#fafaf8}
+.ag-hd{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px}
+.ag-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.ag-title{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);margin-bottom:3px}
+.ag-sub{font-size:11px;color:var(--mu);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.output-card{background:var(--white);border:1px solid var(--bd);border-radius:8px;padding:14px 16px;margin-bottom:12px}
+.output-lbl{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);font-weight:600;margin-bottom:8px}
+.output-txt{font-size:12px;color:var(--text);line-height:1.85;white-space:pre-wrap;max-height:130px;overflow:hidden;position:relative}
+.output-txt::after{content:'';position:absolute;bottom:0;left:0;right:0;height:32px;background:linear-gradient(transparent,#fafaf8)}
+.hitl-card{background:var(--gol);border:1px solid rgba(176,120,0,0.26);border-radius:8px;padding:14px 16px;margin-bottom:10px}
+.hitl-lbl{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--go);font-weight:700;margin-bottom:4px}
+.hitl-q{font-size:11px;color:#555;font-style:italic;margin-bottom:9px;line-height:1.6}
+.hitl-notes-lbl{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--mu);font-weight:600;margin-bottom:3px}
+.hitl-ta{width:100%;padding:7px 9px;border:1px solid var(--bd);border-radius:5px;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--white);resize:none;line-height:1.5;outline:none}
+.hitl-actions{display:flex;align-items:center;gap:8px;margin-top:7px}
+.hitl-confirm{padding:5px 12px;background:var(--go);color:#fff;border:none;border-radius:5px;font-size:10px;font-family:inherit;font-weight:600;cursor:pointer;opacity:0.7}
+.hitl-done{font-size:11px;color:var(--gr);font-weight:500}
+.unlock-card{border:1px solid var(--blb);border-radius:10px;padding:18px 20px;text-align:center;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--bll) 0%,#eaf2fb 100%)}
+.unlock-shimmer{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#00a060,#1a3a5c,#c97c10,#6d28d9,#00a060);background-size:200% 100%;animation:shimmer 2.5s linear infinite}
+@keyframes shimmer{0%{background-position:0% 0}100%{background-position:200% 0}}
+.unlock-title{font-size:9px;letter-spacing:2px;color:var(--bl);text-transform:uppercase;font-weight:700;margin-bottom:6px}
+.unlock-body{font-size:12px;color:var(--text);margin-bottom:14px;line-height:1.55}
+.unlock-btn{padding:10px 28px;background:var(--bl);color:#fff;border:none;border-radius:7px;font-size:12px;font-family:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+
+.pres-topbar{background:var(--white);border-bottom:1px solid var(--bd);padding:8px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.pres-rail{width:136px;border-right:1px solid var(--bd);overflow-y:auto;padding:8px 6px;background:#f0ede8;flex-shrink:0}
+.pthumb{margin-bottom:4px;cursor:pointer;border-radius:5px;border:1px solid transparent;padding:6px 8px;transition:all 0.12s;background:transparent}
+.pthumb:hover{background:var(--white);border-color:var(--bd)}
+.pthumb.on{background:var(--white);border-color:var(--thumb-ac,#00a060)}
+.pthumb-n{font-size:8px;letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-bottom:2px;color:var(--mu)}
+.pthumb.on .pthumb-n{color:var(--thumb-ac,#00a060)}
+.pthumb-l{font-size:10px;line-height:1.3;color:var(--mu)}
+.pthumb.on .pthumb-l{color:var(--text);font-weight:500}
+.pres-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.pres-canvas{flex:1;display:flex;align-items:center;justify-content:center;padding:18px 28px;overflow:hidden}
+.slide{width:100%;max-width:700px;border-radius:11px;border:1px solid var(--bd);background:var(--white);box-shadow:0 3px 20px rgba(0,0,0,0.07);animation:sIn 0.24s ease forwards}
+.pres-notes{border-top:1px solid var(--bd);background:#fffdf8;padding:9px 28px;flex-shrink:0}
+.pres-nav{background:var(--white);border-top:1px solid var(--bd);padding:7px 28px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.pnav-btn{padding:5px 13px;border-radius:5px;font-size:11px;font-family:inherit;cursor:pointer;transition:all 0.12s}
+.pnav-prev{background:var(--bg);color:var(--mu);border:1px solid var(--bd)}
+.pnav-next{border:none;color:#fff;font-weight:600}
+</style>
+
+<div class="app">
+<div class="modebar">
+  <button class="mbtab on" onclick="switchMode('chain')">Chain — all 13 agents</button>
+  <button class="mbtab" onclick="switchMode('pres')">Presentation — 15 slides</button>
+</div>
+
+<div class="view on" id="chain-view">
+  <div class="topbar">
+    <div>
+      <div class="tb-brand-sub">MGMT5410 · Group 13 — 麵王 Meen Wong</div>
+      <div class="tb-brand">QSR <em>CEO Toolkit</em></div>
+    </div>
+    <div class="tb-right">
+      <div class="pbar-wrap">
+        <div class="pbar-lbl">13 / 13 agents complete</div>
+        <div class="pbar-track"><div class="pbar-fill" style="width:100%"></div></div>
+      </div>
+      <button class="tbtn">← Profile</button>
+      <button class="tbtn tbtn-gr">Re-run All</button>
+      <button class="tbtn tbtn-bl" onclick="switchMode('pres')"><span class="play"></span>Present</button>
+    </div>
+  </div>
+  <div class="body">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="detail" id="detail"></div>
+  </div>
+</div>
+
+<div class="view" id="pres-view">
+  <div class="pres-topbar">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="tbtn" onclick="switchMode('chain')">← Chain</button>
+      <span style="font-size:11px;color:var(--mu)">麵王 Meen Wong · Strategy Deck · 2025</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="font-size:11px;color:var(--mu)" id="pcounter">1 / 15</span>
+      <div style="width:100px;height:3px;background:var(--bd);border-radius:2px;overflow:hidden"><div id="ppbar" style="height:100%;width:7%;background:#00a060;border-radius:2px;transition:width 0.3s"></div></div>
+      <button class="tbtn" id="notesToggle" onclick="toggleNotes()" style="font-size:11px">Notes</button>
+    </div>
+  </div>
+  <div class="body">
+    <div class="pres-rail" id="pres-rail"></div>
+    <div class="pres-main">
+      <div class="pres-canvas" id="pres-canvas"></div>
+      <div class="pres-notes" id="pres-notes" style="display:none">
+        <div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);font-weight:600;margin-bottom:4px">Speaker notes</div>
+        <div style="font-size:11px;color:#555;line-height:1.6" id="notes-txt"></div>
+      </div>
+      <div class="pres-nav">
+        <button class="pnav-btn pnav-prev" id="pprev" onclick="pgo(-1)">← Prev</button>
+        <span style="font-size:9px;color:var(--fa);letter-spacing:1.5px;text-transform:uppercase">Arrow keys to navigate</span>
+        <button class="pnav-btn pnav-next" id="pnext" onclick="pgo(1)" style="background:#00a060">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function switchMode(m){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.querySelectorAll('.mbtab').forEach(b=>b.classList.remove('on'));
+  document.getElementById(m+'-view').classList.add('on');
+  document.querySelectorAll('.mbtab').forEach(b=>{if(b.textContent.includes(m==='chain'?'Chain':'Presentation'))b.classList.add('on');});
+}
+
+const AC={gr:'#00a060',bl:'#1a3a5c',or:'#c97c10',pu:'#6d28d9',re:'#9b2335'};
+
+const AGENTS=[
+  {id:'1.0',name:'User Company Profile Input',fw:'Structured Data Collection',ac:AC.gr,stage:'Stage 1 — Context & User Data Input',stageAc:AC.gr,
+   pivotQ:'Review the completeness score. If completeness < 0.80, list every missing field and explain why each gap could corrupt downstream scoring.',
+   scoreTag:'Data_Completeness_Score',
+   output:`DATA_COMPLETENESS_SCORE: 0.91 | INPUT_CLARITY_SCORE: 0.88
+
+COMPANY SNAPSHOT
+麵王 Meen Wong is a 1-store Budget Cantonese noodle brand in Sham Shui Po built on a 40-year grandmother's wonton skin recipe. Daily sales of HKD 8,500 at a 9% net margin indicate lean but profitable unit economics. Expansion target: 2 new corporate-owned stores in 18 months across MTR residential corridors, funded by HKD 1.2M capital.
+
+KEY ASSETS
+• Proprietary wonton skin recipe — 40-year heritage, no MSG, genuinely inimitable in the short term
+• 8-minute table turnover driven by 2-staff lean kitchen — best-in-class throughput for price segment
+• 28% food cost — exceptional margin headroom vs. segment average of 34%
+
+STRATEGIC RISKS
+• Zero written SOPs — entire operation lives in owner's and senior cook's heads; replication is currently impossible
+• Single-point-of-failure on senior cook — succession risk is existential for any expansion
+• Zero digital presence — no brand awareness outside 300m radius of current store
+
+DATA GAPS: No digital revenue data (harms Agent 3.2 marketing analysis). Delivery radius limitation noted.
+
+RECOMMENDATION: Begin SOP documentation this week. Block 4 hours every Monday for kitchen video recording before any expansion decision is made.`,
+   hitl:'Data completeness is 0.91 — satisfactory to proceed. Key gap flagged correctly: no digital metrics because we have none. Will use Foodpanda order data as proxy. Confirmed: SOP documentation starts Monday.'},
+
+  {id:'1.1',name:'Industry Context Document Generation',fw:'Industry Environment Synthesis',ac:AC.gr,stage:'Stage 1 — Context & User Data Input',stageAc:AC.gr,
+   pivotQ:'Does this industry context capture the most current HK QSR dynamics? Surface 2 specific points the CEO should validate before continuing.',
+   scoreTag:'Relevance_Score',
+   output:`RELEVANCE_SCORE: 0.86 | INSIGHT_DENSITY_SCORE: 0.79
+
+HK QSR MARKET OVERVIEW 2025–2026
+Market Size: HKD 42B, growing 4.8% YoY. Budget QSR (under HKD 80/head) accounts for 38% of segment by transaction volume.
+
+KEY TRENDS
+1. Value migration — post-inflation dining shift back toward sub-HKD 70 meals among residential estate workers
+2. MTR residential retail vacancy — 6.2% vacancy in Wong Tai Sin and Kwun Tong ground floor retail (opportunity window)
+3. Delivery platform consolidation — Foodpanda dominates residential estate segments (67% market share vs Deliveroo in budget QSR)
+4. Octopus/FPS adoption — 97% of residential transactions are cashless; cash-only infrastructure is now a friction cost
+5. HACCP enforcement tightening — FEHD increased surprise inspections by 23% in 2025; undocumented kitchens at higher risk
+
+DISTRICT DYNAMICS
+MTR residential rental index: Wong Tai Sin ground floor ~HKD 28/sqft/month vs CBD HKD 65/sqft/month — 57% discount validates budget QSR expansion thesis.
+
+KEY UNCERTAINTIES
+1. Validate the 6.2% vacancy rate with a local estate agent before signing any LOI
+2. Confirm Foodpanda residential delivery share with a local F&B operator — platform data may differ from industry estimates`,
+   hitl:'Confirms the MTR residential rental advantage I already suspected. The 57% discount vs CBD is the financial case for Wong Tai Sin. Will validate vacancy rate with my Kwun Tong landlord contact before proceeding. The HACCP enforcement point is alarming — I had not factored this in.'},
+
+  {id:'2.1',name:'PESTEL Analysis (HK QSR)',fw:'PESTEL Framework',ac:AC.bl,stage:'Stage 2 — External Environmental Scan',stageAc:AC.bl,
+   pivotQ:'Which 2 PESTEL factors have the highest combined impact × probability for 麵王?',
+   scoreTag:'Coverage_Score',
+   output:`COVERAGE_SCORE: 0.92
+
+TOP 2 HIGHEST IMPACT × PROBABILITY FACTORS
+
+[E] Pork/beef import cost escalation — impact 5, probability 4, rating 20
+RMB appreciation driving wet market prices +18% YoY. Direct threat to 28% food cost advantage. Mitigation: fixed-price 6-month contract with existing butcher.
+
+[S] Ageing F&B kitchen workforce — impact 4, probability 5, rating 20
+Average HK kitchen worker age is 52. Senior cook succession is a 6-month time horizon risk. No pipeline = no expansion.
+
+[T] HACCP compliance documentation — impact 4, probability 4, rating 16
+FEHD surprise inspections up 23%. Undocumented kitchen = compliance risk at current site AND blocker for any new Food Business Licence application.
+
+[E] MPF employer contributions — impact 3, probability 5, rating 15
+Each new hire adds 5% MPF obligation. 2 new stores = ~6 new kitchen staff = HKD 48,000/year additional obligation.
+
+TOP OPPORTUNITIES
+1. MTR residential vacancy window — 6.2% in Wong Tai Sin/Kwun Tong (act within 12 months)
+2. Cashless transition — eliminating cash infrastructure reduces queue time ~11% and till error costs`,
+   hitl:'HACCP compliance risk is now my top priority — more urgent than the expansion itself. I will engage a food safety consultant in Month 1 regardless of expansion timeline. The MPF cost for 6 new staff is manageable within the HKD 1.2M budget — already factored into the roadmap model.'},
+
+  {id:'2.2',name:"Porter's Five Forces (HK QSR)",fw:"Porter's Five Forces",ac:AC.bl,stage:'Stage 2 — External Environmental Scan',stageAc:AC.bl,
+   pivotQ:'Which 2 forces pose the greatest threat to 麵王 specifically?',
+   scoreTag:'Consistency_Score',
+   output:`INDUSTRY_ATTRACTIVENESS_SCORE: 3.1/5 | CONSISTENCY_SCORE: 0.88
+
+FORCE ANALYSIS
+
+Supplier Power — HIGH (4/5)
+Single wet market source and 6-year butcher relationship create reliability but zero cost leverage. No alternative qualified supplier identified. Pork/beef at spot market price.
+
+Threat of Substitutes — HIGH (4/5)
+7-Eleven hot noodles at HKD 28, Circle K congee at HKD 22 directly compete for HKD 40-60 lunch bracket in residential estates. Cooked food centres in Wong Tai Sin and Kwun Tong at near-identical price points.
+
+Competitive Rivalry — MEDIUM (3/5)
+Mak's Noodle and Tsui Wah compete on heritage but at HKD 80-140 price points — different customer. Local cha chaan tengs are the real competitive set but lack the recipe heritage.
+
+Buyer Power — MEDIUM (3/5)
+OpenRice and Google Maps reviews are decisive for first visits. 麵王 has zero reviews outside Sham Shui Po — a cold-start problem for new sites.
+
+Threat of New Entrants — LOW (2/5)
+Food Business Licence, high kitchen fit-out cost, and MTR landlord concentration create meaningful barriers.
+
+SELF-EVALUATION: Supplier power and substitution threat are most uncertain — local conditions in Wong Tai Sin may differ.`,
+   hitl:'Agree that supplier power and substitution threat are the two forces requiring immediate action. The cold-start review problem for new sites is something I had not quantified — will seed OpenRice profiles for both target sites 3 months before opening. Engaging a second butcher supplier as a price reference in Month 2.'},
+
+  {id:'3.1',name:'VRIO Analysis (Company Specific)',fw:'VRIO Framework',ac:AC.or,stage:'Stage 3 — Internal Capability Assessment',stageAc:AC.or,
+   pivotQ:'Which VRIO resources are genuinely sustainable beyond 18 months? Flag any with imitability window < 18 months.',
+   scoreTag:'Competitive_Advantage_Score',
+   output:`COMPETITIVE_ADVANTAGE_SCORE: 0.43 | COMPLETENESS_SCORE: 1.0
+
+SUSTAINED COMPETITIVE ADVANTAGE
+• Grandmother's wonton skin recipe — Valuable: Yes (taste differentiation). Rare: Yes (no documented equivalent in HK). Inimitable: 36+ months (tacit knowledge, muscle memory). Organised: PARTIALLY — recipe exists only in owner's and senior cook's memory. URGENT FLAG.
+• 8-minute table turnover — Valuable: Yes (throughput advantage). Rare: Yes (competitors average 14 min). Inimitable: 18 months (requires kitchen discipline culture). Organised: PARTIALLY — no written kitchen SOP.
+
+TEMPORARY COMPETITIVE ADVANTAGE (imitability < 18 months — FLAGGED)
+• 6-year butcher relationship — Valuable: Yes. Rare: Partly. Inimitable: 12 months (competitor can build similar relationship). ACTION: formalise as fixed-price contract.
+• Owner's wet market sourcing network — Valuable: Yes. Rare: Yes. Inimitable: 6 months. CRITICAL: not transferable to a site manager without codification.
+
+COMPETITIVE PARITY
+• Octopus POS terminal — standard infrastructure, zero differentiation
+• Foodpanda merchant account — replicable by any competitor in 2 weeks`,
+   hitl:'Confirmed. The recipe and 8-min turnover are the two genuine moats. The senior cook succession risk is the most urgent strategic item. Have identified a candidate for the apprenticeship from my extended family network — will approach them this week. Owner sourcing network codification is being added to the SOP document as a separate chapter.'},
+
+  {id:'3.2',name:'Value Chain Analysis (Company Specific)',fw:"Porter's Value Chain",ac:AC.or,stage:'Stage 3 — Internal Capability Assessment',stageAc:AC.or,
+   pivotQ:'Where are the bottlenecks that will break first during expansion?',
+   scoreTag:'Overall_Efficiency_Score',
+   output:`OVERALL_EFFICIENCY_SCORE: 3.2/5 | INTERDEPENDENCY_SCORE: 0.83
+
+TOP SCALE-UP BOTTLENECKS
+
+1. HRM → Operations cascade
+No written SOP means every new hire starts from zero. Owner-led 3-day verbal training cannot be replicated at a 3rd location. BOTTLENECK: hiring a second cook who can replicate wonton technique without owner present.
+
+2. Inbound Logistics → Procurement cascade
+Owner's personal wet market relationships are the procurement function. These are not documented or transferable. A Wong Tai Sin store manager cannot source correctly without the owner's daily presence.
+
+3. Technology → Marketing & Sales cascade
+Zero digital presence means no brand carry to new districts. The HKD 8,500 daily sales baseline was built over years of word-of-mouth in Sham Shui Po. Wong Tai Sin starts at zero.
+
+INTERDEPENDENCIES
+SOP documentation → enables HRM training → enables Operations replication
+Butcher contract formalisation → reduces Procurement volatility → protects food cost margin
+OpenRice profile seeding → drives initial Marketing & Sales → enables revenue ramp at Site 1
+
+TOP 3 SCALE-UP LEVERS
+1. Complete kitchen SOP with video (Month 3)
+2. Train second cook to 90% recipe accuracy (Month 5)
+3. Launch OpenRice + WhatsApp Business profiles (Month 6)`,
+   hitl:'This confirms what I already felt but could not articulate: every weakness is the same root problem — the operation is inside my head. Committing to 4 hours every Monday for SOP documentation. Starting with wonton skin rolling technique on video this weekend.'},
+
+  {id:'4.1',name:'SWOT Synthesis & Key Strategic Issues',fw:'SWOT / TOWS Matrix',ac:AC.pu,stage:'Stage 4 — Strategic Options Generation',stageAc:AC.pu,
+   pivotQ:'What is the single most critical issue the CEO must resolve before choosing a growth path?',
+   scoreTag:'Synthesis_Clarity_Score',
+   output:`SYNTHESIS_CLARITY_SCORE: 0.91
+
+TOP STRATEGIC ISSUE: Zero written SOPs make replication of the core value proposition — the wonton recipe and 8-minute turnover — structurally impossible at this time. No expansion decision should be made until this is resolved.
+
+TOWS HIGHLIGHTS
+
+SO (Strengths × Opportunities)
+1. Deploy recipe heritage as in-store storytelling at MTR residential sites — zero cost, creates brand memory against cooked food centre substitutes
+2. Lock in Wong Tai Sin ground floor lease during 6.2% vacancy window using proven Sham Shui Po unit economics as financial proof
+
+ST (Strengths × Threats)
+1. Formalise butcher supplier as 6-month fixed-price contract to protect 28% food cost against pork/beef escalation
+2. Seed OpenRice reviews 3 months pre-opening to neutralise cold-start buyer power disadvantage
+
+WT (Weaknesses × Threats)
+1. Prioritise HACCP documentation before expansion — compliance gap threatens the existing store's licence, not just new sites
+2. Build apprenticeship pipeline for senior cook before any lease is signed — succession risk is a precondition, not a parallel track`,
+   hitl:'The SWOT accurately captures the situation. The WT diagonal is sobering — rising costs plus zero documentation is the scenario that ends the business. Accepted as accurate. The SO point about recipe storytelling at the fit-out level is being actioned: will commission a framed recipe wall for both new sites.'},
+
+  {id:'4.2',name:'Ansoff Matrix Options Generation',fw:'Ansoff Matrix',ac:AC.pu,stage:'Stage 4 — Strategic Options Generation',stageAc:AC.pu,
+   pivotQ:'Which Ansoff quadrants are most realistic given conservative risk appetite and HKD 1.2M capital?',
+   scoreTag:'Option_Diversity_Score',
+   output:`OPTION_DIVERSITY_SCORE: 0.88 | RECOMMENDED_QUADRANTS: Market Development + Market Penetration
+
+RECOMMENDED: MARKET DEVELOPMENT (primary)
+Strategy: Open 2 new corporate-owned stores at MTR residential stations (Wong Tai Sin, Kwun Tong) — identical concept, zero menu innovation, leveraging proven unit economics.
+Feasibility: 4/5 | Growth potential: 4/5 | Capital: HKD 500K–1.2M | Risk: Low-Medium
+Key assumption: SOP complete and second cook trained before Site 1 opens.
+
+RECOMMENDED: MARKET PENETRATION (parallel track)
+Strategy: Extend Foodpanda delivery radius from 1.5km to 2.5km at existing Sham Shui Po store — generates incremental revenue to fund expansion cash flow.
+Feasibility: 5/5 | Growth potential: 2/5 | Capital: < HKD 50K | Risk: Low
+Key assumption: Kitchen can handle delivery volume without degrading dine-in throughput.
+
+NOT RECOMMENDED FOR 18 MONTHS:
+Product Development (new menu items) — risks diluting wonton brand purity.
+Diversification (catering, meal kits) — requires SOP infrastructure to exist first.`,
+   hitl:'Market Development is correct as the primary strategy. No appetite for Product Development — the wonton brand purity is the asset. The delivery radius extension at Sham Shui Po is an easy win — will request Foodpanda account manager meeting this month.'},
+
+  {id:'4.3',name:'Blue Ocean Strategy Ideas',fw:'Blue Ocean / ERCC Grid',ac:AC.pu,stage:'Stage 4 — Strategic Options Generation',stageAc:AC.pu,
+   pivotQ:'Which Blue Ocean idea genuinely disrupts HK QSR assumptions AND aligns with this brand identity?',
+   scoreTag:'Distinctiveness_Score',
+   output:`DISTINCTIVENESS_SCORE: 0.79
+
+RECOMMENDED MOVE: "Living Recipe Archive"
+Description: Eliminate generic cha chaan teng laminate décor. Raise intergenerational heritage storytelling through in-store framed original recipe card, grandmother's portrait, and handwritten technique notes on the kitchen-facing wall visible to diners.
+ERCC: Eliminate plastic promotional signage / Reduce seating density / Raise storytelling authenticity / Create a "recipe guardian" apprenticeship programme visible to customers
+Novelty score: 4.2/5 | Customer value: 4.6/5 | Implementation complexity: 1.2/5 (near-zero cost)
+Revenue model: Amplifies existing word-of-mouth; drives OpenRice heritage positioning; premium on catering enquiries
+HK market fit: Intergenerational heritage resonates strongly in residential estate communities; counter-positions against 7-Eleven
+Cannibalization risk: ZERO — amplifies existing brand narrative, no menu or price change required
+
+SECONDARY MOVE: "Apprentice Wall"
+Visible kitchen where diners can watch the wonton rolling technique — differentiates from cooked food centres and convenience stores on product authenticity.`,
+   hitl:'The heritage storytelling angle resonates very strongly. This aligns with who I am as an owner. Committed to the grandmother portrait and original recipe wall for both new sites. The apprentice wall concept will be designed into the kitchen layout at Wong Tai Sin. Near-zero cost for maximum brand differentiation — this is the right call.'},
+
+  {id:'5.1',name:'Strategic Option Scenario Development',fw:'Scenario Planning',ac:AC.or,stage:'Stage 5 — Option Evaluation & Prioritization',stageAc:AC.or,
+   pivotQ:'Which scenario best fits the long-term vision? What is the most critical Base Case assumption?',
+   scoreTag:'Scenario_Plausibility_Score',
+   output:`SCENARIO_PLAUSIBILITY_SCORE: 0.88 | PROBABILITY_SUM: 1.00
+RECOMMENDED SCENARIO: Base Case (for Conservative risk appetite)
+
+BASE CASE (65% probability)
+Tag: "Document, then expand steadily"
+Stores: +2 by Month 18 | Revenue growth: +24% | Capex: HKD 980K
+Key assumptions: SOP complete Month 3; second cook trained Month 5; Wong Tai Sin lease signed Month 5
+Key risks: Senior cook unavailability; pork cost spike >15%
+Phasing: Foundation (M1–4) → Site 1 open (M9) → Site 2 open (M18)
+
+OPTIMISTIC (20% probability)
+Tag: "Heritage brand breaks out"
+Stores: +2 by Month 15 | Revenue growth: +38% | Capex: HKD 1.1M
+Key assumptions: OpenRice seeding drives 30% faster ramp; butcher 3-year fixed price locked
+Key risks: Overextension of owner's management bandwidth
+
+PESSIMISTIC (15% probability)
+Tag: "Documentation delayed, costs spike"
+Stores: +1 by Month 18 | Revenue growth: +9% | Capex: HKD 520K
+Triggers: SOP not complete by Month 5; pork/beef costs +25%; senior cook health issue
+Note: Every trigger in the pessimistic case is a known, preventable risk.`,
+   hitl:'Base Case is the operating plan. The Pessimistic triggers are all preventable — which is why the Foundation phase actions are non-negotiable. Will revisit the Optimistic Case after the Month 6 unit economics review at Site 1. The 65% probability assessment feels right given the SOP uncertainty.'},
+
+  {id:'5.2',name:'Risk Assessment & Mitigation',fw:'Risk Matrix / P.A.R.S.',ac:AC.or,stage:'Stage 5 — Option Evaluation & Prioritization',stageAc:AC.or,
+   pivotQ:'What are the top 2 failure risks? Are mitigations realistic given HKD 1.2M capital?',
+   scoreTag:'Risk_Coverage_Score',
+   output:`RISK_COVERAGE_SCORE: 0.93 | AVERAGE_RISK_RATING: 11.4
+
+CRITICAL RISKS (rating ≥15)
+
+R01 — Senior cook single point of failure | Rating: 20 (P:4 × I:5)
+Category: People | Owner: CEO
+Early warning: Senior cook takes >5 sick days/month or mentions retirement
+Mitigation: Begin apprenticeship training Month 1; complete video SOP by Month 3
+Contingency: Pause Site 1 opening until second cook achieves 85% recipe accuracy
+
+R02 — Zero written SOP blocks replication | Rating: 16 (P:4 × I:4)
+Category: Operational | Owner: CEO
+Early warning: SOP document not 50% complete by end of Month 2
+Mitigation: Owner commits 4 hours/week; target full SOP by Month 3
+Contingency: Hire food safety consultant to co-author if owner bandwidth insufficient
+
+SIGNIFICANT RISKS (8–14)
+R03 — Pork/beef cost escalation | Rating: 12 | Mitigation: 6-month fixed-price butcher contract by Month 2
+R04 — Existing store rent increase (25% threatened) | Rating: 10 | Mitigation: Counter-offer 3-year fixed lease this month
+R05 — HACCP non-compliance at new sites | Rating: 10 | Mitigation: Engage food safety consultant Month 1`,
+   hitl:'R01 and R02 are being treated as a single programme starting Week 1. Have identified an apprentice candidate. The food safety consultant has been contacted — will retain them to co-author the HACCP section of the SOP. Butcher fixed-price conversation is scheduled for next week.'},
+
+  {id:'6.1',name:'OKR Framework & Strategic Objectives',fw:'Objectives & Key Results',ac:AC.gr,stage:'Stage 6 — Decision & Implementation',stageAc:AC.gr,isPivot:true,
+   pivotQ:'⚡ PIVOT GATE: If OKR_Quality_Score < 0.80, ask CEO 2 targeted questions. Which KR is the most critical leading indicator?',
+   scoreTag:'OKR_Quality_Score',
+   output:`OKR_QUALITY_SCORE: 0.84 — Passes pivot gate. Proceeding.
+
+OBJECTIVE 1: Open 2 profitable new stores by Month 18
+KR1.1: Site 1 (Wong Tai Sin) open and trading by Month 9 — Owner, monthly check
+KR1.2 [LEADING]: Kitchen SOP 100% complete and reviewed by Month 3 — Owner, gate for Site 1 lease
+KR1.3 [LEADING]: Second cook achieves 85% recipe accuracy score by Month 5 — Owner/Senior Cook
+
+OBJECTIVE 2: Protect and grow unit economics across all sites
+KR2.1: Food cost ≤ 30% at all sites by Month 12 — COO, monthly P&L
+KR2.2: Site 1 achieves HKD 8,000 daily sales within 60 days of opening — COO, daily POS
+KR2.3 [LEADING]: Butcher fixed-price contract signed by Month 2 — linked to R03
+
+CRITICAL LEADING INDICATOR: KR1.2 (SOP completion by Month 3) is the master gate — every other KR depends on it being done first. If it slips, pause all expansion.`,
+   hitl:'OKR quality score 0.84 is acceptable and the framing is accurate. The SOP KR by Month 3 is the non-negotiable gate — I have blocked every Monday morning in my calendar for the next 12 weeks for documentation sessions. KR2.3 (butcher contract) is being actioned this week.'},
+
+  {id:'6.2',name:'Resource Allocation & Implementation Roadmap',fw:'Gantt / Resource Planning',ac:AC.gr,stage:'Stage 6 — Decision & Implementation',stageAc:AC.gr,isLast:true,
+   pivotQ:'Is HKD 1.2M sufficient? If funding were cut 20%, what would you cut first? Ask COO/CFO 2 sequencing questions.',
+   scoreTag:'Resource_Feasibility_Score',
+   output:`RESOURCE_FEASIBILITY_SCORE: 0.88
+
+CAPITAL ALLOCATION (HKD 1,200,000)
+Fit-out Site 1 (Wong Tai Sin): HKD 420,000
+Fit-out Site 2 (Kwun Tong): HKD 380,000
+Kitchen equipment (both sites): HKD 180,000
+Marketing/OpenRice/signage: HKD 60,000
+Legal/licences/HACCP consultant: HKD 55,000
+Contingency (10%): HKD 105,000
+Total: HKD 1,200,000 ✓
+
+3-PHASE ROADMAP
+
+FOUNDATION (Months 1–4) | Go/No-Go: SOP complete + apprentice hired
+• Commit kitchen SOP to video (M1–3)
+• Hire and begin apprentice training (M1)
+• Butcher 6-month fixed-price contract (M2)
+• Engage HACCP food safety consultant (M1)
+
+PILOT (Months 5–11) | Go/No-Go: Second cook at 85% accuracy
+• Wong Tai Sin lease signed (M5)
+• Site 1 fit-out and equipment (M6–8)
+• OpenRice + WhatsApp Business launch (M6)
+• Site 1 opens (M9)
+
+SCALE (Months 12–18) | Go/No-Go: Site 1 daily sales ≥ HKD 7,500
+• Kwun Tong lease signed (M12)
+• Site 2 fit-out (M13–16)
+• Site 2 opens (M18)
+• Heritage storytelling installation at all 3 sites
+
+COO/CFO TRADE-OFF QUESTIONS:
+1. If Kwun Tong fit-out exceeds HKD 380K, do we delay opening by 3 months or reduce contingency reserve?
+2. If Site 1 daily sales at Month 10 are below HKD 7,500, do we pause Site 2 acquisition or proceed as planned?`,
+   hitl:'Capital is sufficient at HKD 1.2M if we hold Kwun Tong fit-out under HKD 380K. If costs spike, delay Site 2 by 3 months rather than cut the SOP, apprenticeship or HACCP consultant — those are non-negotiable. On the COO questions: (1) delay opening, not contingency; (2) pause Site 2 acquisition — the Base Case assumes both sites are profitable, not loss-funded.'},
+];
+
+const STAGE_ORDER=['Stage 1 — Context & User Data Input','Stage 2 — External Environmental Scan','Stage 3 — Internal Capability Assessment','Stage 4 — Strategic Options Generation','Stage 5 — Option Evaluation & Prioritization','Stage 6 — Decision & Implementation'];
+
+let activeAgentId='6.2';
+
+function buildSidebar(){
+  const sb=document.getElementById('sidebar');
+  let html='';
+  let lastStage='';
+  AGENTS.forEach(ag=>{
+    if(ag.stage!==lastStage){
+      const stageColor=ag.stageAc;
+      html+=`<div class="stage-hd" style="color:${stageColor};border-color:${stageColor}">${ag.stage}</div>`;
+      lastStage=ag.stage;
+    }
+    const isActive=ag.id===activeAgentId;
+    const doneStyle=`background:${ag.ac};border-color:${ag.ac};color:#fff`;
+    const tagsBg=`background:${ag.ac}18;color:${ag.ac}`;
+    const extraTags=(ag.isPivot?`<span class="tag" style="background:#f3eeff;color:#6d28d9">⚡ Pivot</span>`:'')+(ag.isLast?`<span class="tag" style="background:#e8f0f8;color:#1a3a5c">Final</span>`:'');
+    html+=`<div class="ag${isActive?' active':' done'}" style="${isActive?`--active-ac:${ag.ac}`:''}" onclick="selectAgent('${ag.id}')">
+      <div class="ag-av" style="${doneStyle}">✓</div>
+      <div style="flex:1;min-width:0">
+        <div class="ag-name" style="${isActive?'font-weight:500':''}"> ${ag.name}</div>
+        <div class="ag-tags">
+          <span class="tag" style="${tagsBg}">${ag.fw}</span>
+          <span class="tag" style="background:#eaf5f0;color:#00a060">HITL ✓</span>
+          ${extraTags}
+        </div>
+      </div>
+      <button class="ag-run" style="background:${ag.ac}18;color:${ag.ac}">Re-run</button>
+    </div>`;
+  });
+  html+=`<div class="sb-cta">
+    <div class="sb-cta-lbl">Strategy Complete</div>
+    <div class="sb-cta-body">All 13 agents reviewed. Your 15-slide presentation is ready.</div>
+    <button class="sb-cta-btn" onclick="switchMode('pres')"><span class="play"></span>Open Presentation</button>
+  </div>`;
+  sb.innerHTML=html;
+}
+
+function buildDetail(agId){
+  const ag=AGENTS.find(a=>a.id===agId);if(!ag)return;
+  const detail=document.getElementById('detail');
+  const unlockHtml=ag.isLast?`<div class="unlock-card">
+    <div class="unlock-shimmer"></div>
+    <div style="font-size:9px;letter-spacing:2px;color:#1a3a5c;text-transform:uppercase;font-weight:700;margin-bottom:6px;margin-top:4px">All 13 Agents Complete & Reviewed</div>
+    <div class="unlock-body">Your full strategic analysis for <strong>麵王 Meen Wong</strong> is ready.<br>Generate a polished 15-slide light-mode deck synthesising all findings.</div>
+    <button class="unlock-btn" onclick="switchMode('pres')"><span class="play"></span>Open Strategy Presentation</button>
+  </div>`:'';
+  const pivotHtml=ag.isPivot?`<div style="background:#f3eeff;border:1px solid rgba(109,40,217,0.18);border-radius:7px;padding:12px 14px;margin-bottom:10px">
+    <div style="font-size:8px;letter-spacing:2px;color:#6d28d9;text-transform:uppercase;font-weight:700;margin-bottom:4px">⚡ Pivot Gate — Agent 6.1</div>
+    <div style="font-size:11px;color:#333;line-height:1.6">OKR_Quality_Score was 0.84 — passes the 0.80 threshold. Chain continues to Agent 6.2.</div>
+  </div>`:'';
+
+  detail.innerHTML=`<div class="fade-up" style="animation:fUp 0.2s ease forwards">
+    <div class="ag-hd">
+      <div class="ag-icon" style="background:${ag.ac}">${ag.id}</div>
+      <div style="flex:1">
+        <div class="ag-title">${ag.name}</div>
+        <div class="ag-sub">
+          <span>${ag.fw}</span><span>·</span>
+          <span style="background:${ag.ac}15;color:${ag.ac};padding:1px 7px;border-radius:3px;font-size:10px;font-weight:500">scores: ${ag.scoreTag}</span>
+          ${ag.isPivot?`<span style="background:#f3eeff;color:#6d28d9;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:600">⚡ Pivot Gate</span>`:''}
+          ${ag.isLast?`<span style="background:#e8f0f8;color:#1a3a5c;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:600">Final Agent</span>`:''}
+        </div>
+      </div>
+      <button style="padding:4px 11px;border:1px solid ${ag.ac};border-radius:5px;background:#fff;color:${ag.ac};font-size:10px;font-family:inherit;font-weight:600;cursor:pointer">Re-run ${ag.id}</button>
+    </div>
+    <div class="output-card">
+      <div class="output-lbl">Agent ${ag.id} Output — ${ag.name}</div>
+      <div class="output-txt">${ag.output}</div>
+    </div>
+    <div class="hitl-card">
+      <div class="hitl-lbl">HITL Checkpoint</div>
+      <div class="hitl-q">"${ag.pivotQ}"</div>
+      <div class="hitl-notes-lbl">CEO Strategic Notes</div>
+      <textarea class="hitl-ta" rows="3" readonly>${ag.hitl}</textarea>
+      <div class="hitl-actions">
+        <button class="hitl-confirm">✓ Confirm HITL Review</button>
+        <span class="hitl-done">Reviewed ✓</span>
+      </div>
+    </div>
+    ${pivotHtml}
+    ${unlockHtml}
+  </div>`;
+}
+
+function selectAgent(id){
+  activeAgentId=id;
+  buildSidebar();
+  buildDetail(id);
+  document.getElementById('detail').scrollTop=0;
+}
+
+buildSidebar();
+buildDetail('6.2');
+
+const h2r=(hex,a)=>{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`};
+
+const STAC={'1.0':'#00a060','1.1':'#00a060','2.1':'#1a3a5c','2.2':'#1a3a5c','3.1':'#c97c10','3.2':'#c97c10','4.1':'#6d28d9','4.2':'#6d28d9','4.3':'#6d28d9','5.1':'#c97c10','5.2':'#c97c10','6.1':'#00a060','6.2':'#00a060'};
+
+const SLIDES=[
+  {id:'s01',label:'Cover',agentId:'1.0',ac:'#00a060',type:'title',title:'麵王 Meen Wong',subtitle:'Scaling 40 years of wonton heritage into Hong Kong\'s MTR residential corridor — a conservative 18-month expansion blueprint',notes:'Open by honouring the brand\'s heritage: a 40-year grandmother\'s recipe. The strategic question is how to preserve authenticity at scale.'},
+  {id:'s02',label:'Exec Summary',agentId:'1.0',ac:'#00a060',type:'content',bullets:['Grandmother\'s wonton skin recipe and 8-minute table turnover are sustained advantages — the expansion must codify, not dilute them','Zero written SOPs and single-point-of-failure on the senior cook are the two existential risks that must be resolved before any lease is signed','HKD 1.2M capital is sufficient for 2 corporate-owned stores in 18 months under a conservative, documented model','Rising pork/beef costs (+18% YoY) and an imminent 25% rent increase demand urgent defensive action in Month 1'],insight:'麵王\'s expansion is viable — but only if operational documentation is built before the first new site opens.',notes:'Frame this as a heritage brand executing a careful, documented expansion. The strategic risk is internal, not competitive.'},
+  {id:'s03',label:'Industry Context',agentId:'1.1',ac:'#00a060',type:'content',bullets:['HK Budget QSR growing 4.8% YoY driven by post-inflation value migration among residential estate workers','MTR residential ground floor vacancy at 6.2% in Wong Tai Sin and Kwun Tong — rental index 57% below CBD','Foodpanda holds 67% residential estate delivery market share in budget QSR — current 1.5km radius is a constraint','HACCP enforcement intensified: FEHD surprise inspections up 23% in 2025 — undocumented kitchens at compliance risk'],insight:'The budget noodle segment is structurally protected from premium chain competition — the threat is lateral, from cooked food centres and convenience stores.',notes:'Emphasise the rental premium gap — this is the financial case for the target district choice. Surface the HACCP point early.'},
+  {id:'s04',label:'PESTEL',agentId:'2.1',ac:'#1a3a5c',type:'content',bullets:['Economic: Pork/beef import costs +18% YoY driven by RMB appreciation — fixed supplier contracts are urgent (impact 5 × probability 4)','Social: Average HK kitchen worker age is 52 — senior cook succession is a 6-month time horizon risk, not a long-term one','Technological: Octopus/FPS adoption at 97% in residential areas — zero-cash sites reduce queue time ~11%','Legal: HACCP compliance gap is a FEHD inspection risk at the existing Sham Shui Po store — immediate documentation required'],insight:'The HACCP compliance requirement gives the SOP mandate legal urgency beyond just operational readiness.',notes:'The HACCP enforcement point is the strongest argument for prioritising SOP documentation — frame it as a legal obligation, not just good practice.'},
+  {id:'s05',label:'Five Forces',agentId:'2.2',ac:'#1a3a5c',type:'content',bullets:['Supplier power HIGH: Single wet market source — zero cost leverage on pork/beef; no alternative qualified supplier identified','Substitution threat HIGH: 7-Eleven noodles at HKD 28 and Circle K congee at HKD 22 directly compete for the lunch bracket','Competitive rivalry MEDIUM: Mak\'s Noodle and Tsui Wah compete at HKD 80–140 — different customer entirely','Buyer power MEDIUM: OpenRice and Google Maps decisive for first visits — 麵王 has zero reviews outside Sham Shui Po'],insight:'Supplier power and substitution threat are the two forces requiring immediate mitigation — not competition from Tsui Wah.',notes:'The cold-start review problem for new sites is often underestimated. Seed OpenRice profiles 3 months before each opening.'},
+  {id:'s06',label:'VRIO Analysis',agentId:'3.1',ac:'#c97c10',type:'content',bullets:['SUSTAINED: 40-year wonton skin recipe — 36+ month inimitability; currently lives only in two people\'s hands','SUSTAINED: 8-minute table turnover — kitchen discipline culture; 18-month replication window for competitors','TEMPORARY (12 months): 6-year butcher relationship — valuable but supplier holds leverage; formalise as fixed-price contract immediately','PARITY: Octopus POS — standard infrastructure, replicable in weeks by any competitor'],insight:'The recipe is the crown jewel — but it only remains inimitable if it is codified before the senior cook\'s availability changes.',notes:'Use the 36-month inimitability window to reassure the audience the moat is real — but only if documented this quarter.'},
+  {id:'s07',label:'Value Chain',agentId:'3.2',ac:'#c97c10',type:'content',bullets:['HRM → Operations cascade: No SOP means every new hire starts from zero — kitchen cannot be replicated without owner present','Inbound Logistics → Procurement cascade: Owner\'s personal wet market relationships are not documented or transferable to a site manager','Technology → Marketing cascade: Zero digital presence means Wong Tai Sin opens with zero brand awareness — cold-start problem quantified','Operations STRENGTH: 28% food cost and 8-min throughput are best-in-class; the processes that produce them must be written down'],insight:'Every value chain weakness traces back to one root cause: the entire operation exists in the owner\'s head.',notes:'The value chain makes the SOP mandate undeniable — frame it as the foundation that unlocks every other expansion lever.'},
+  {id:'s08',label:'SWOT Matrix',agentId:'4.1',ac:'#6d28d9',type:'swot',swotData:{strengths:['40-year recipe — 36-month inimitability window','8-min turnover — best-in-class throughput','28% food cost — exceptional margin headroom'],weaknesses:['Zero written SOPs — replication structurally impossible today','Senior cook dependency — single point of failure','Zero digital presence — cold-start at every new site'],opportunities:['MTR residential vacancy 6.2% — 12-month window','Octopus cashless adoption eliminates till friction','Heritage storytelling — zero cost brand differentiation'],threats:['Pork/beef +18% YoY — margin erosion risk','Landlord seeking 25% rent increase in 8 months','7-Eleven/Circle K compete on price in lunch bracket']},notes:'Direct attention to the WT diagonal — zero SOPs plus rising costs is the scenario that ends the business. The ST diagonal is the growth thesis.'},
+  {id:'s09',label:'Ansoff Matrix',agentId:'4.2',ac:'#6d28d9',type:'content',bullets:['PRIMARY: Market Development — 2 new MTR residential sites using identical concept; no menu innovation required','PARALLEL: Market Penetration — extend Foodpanda radius from 1.5km to 2.5km at existing store; < HKD 50K, immediate','NOT RECOMMENDED: Product Development — risks diluting the wonton brand purity that drives repeat visits','NOT YET: Diversification (catering, meal kits) — requires SOP infrastructure to exist first; beyond 18-month horizon'],insight:'Market Development is the only quadrant that scales the recipe without changing it — the safest path for a heritage brand.',notes:'The conservative risk appetite makes Market Development the only credible primary strategy. Penetration runs as a cash-generating parallel track.'},
+  {id:'s10',label:'Blue Ocean',agentId:'4.3',ac:'#6d28d9',type:'content',bullets:['RECOMMENDED: "Living Recipe Archive" — frame original recipe card, grandmother\'s portrait, handwritten technique notes as in-store heritage installation','ERCC: Eliminate plastic laminate décor / Reduce seating density / Raise storytelling authenticity / Create visible apprentice rolling station','Novelty: 4.2/5 — no budget noodle brand in HK has codified heritage as an in-store experience; costed at near zero','Cannibalization risk: ZERO — amplifies existing brand narrative without changing price point or menu'],insight:'Codifying the grandmother\'s story costs nothing and creates a brand moat that convenience stores and cooked food centres cannot replicate.',notes:'The apprenticeship rolling station also solves the succession risk visibly — frame it as a strategic dual-purpose initiative.'},
+  {id:'s11',label:'Scenarios',agentId:'5.1',ac:'#c97c10',type:'content',bullets:['BASE CASE (65%): 2 stores by Month 18, +24% revenue, HKD 980K capex — SOP complete M3, second cook trained M5','OPTIMISTIC (20%): 2 stores by Month 15, +38% revenue — butcher 3-year fixed price, OpenRice drives 30% faster Site 1 ramp','PESSIMISTIC (15%): 1 store by Month 18, +9% revenue — triggered by SOP delay, pork spike >25%, or senior cook unavailability','Critical note: every trigger in the Pessimistic Case is a known, preventable risk — not bad luck'],insight:'The Pessimistic scenario is entirely preventable — it is the consequence of delaying SOP documentation and succession planning.',notes:'Stress that the Pessimistic Case is not a market risk — it is an operational risk fully within the CEO\'s control.'},
+  {id:'s12',label:'Risk Register',agentId:'5.2',ac:'#c97c10',type:'content',bullets:['R01 CRITICAL (P:4 × I:5 = 20): Senior cook SPoF — apprenticeship Month 1; video SOP by Month 3; pause Site 1 if not met','R02 CRITICAL (P:4 × I:4 = 16): Zero SOP — owner 4 hrs/week; HACCP consultant retained; full document by Month 3','R03 SIGNIFICANT (P:3 × I:4 = 12): Pork/beef escalation — butcher 6-month fixed-price contract by Month 2','R04 SIGNIFICANT (P:2 × I:5 = 10): Existing store rent increase — counter-offer 3-year fixed lease this month'],insight:'R01 and R02 are the same root risk in two forms — both require the owner\'s personal time commitment starting Week 1.',notes:'Hand R01 and R02 to the owner as a single action: 4 hours per week on documentation prevents both failure modes.'},
+  {id:'s13',label:'OKRs',agentId:'6.1',ac:'#00a060',type:'content',bullets:['O1/KR1.1: Site 1 (Wong Tai Sin) open and trading by Month 9 — Owner, monthly milestone check','O1/KR1.2 LEADING: Kitchen SOP 100% complete and peer-reviewed by Month 3 — Owner; gate for signing any new lease','O1/KR1.3 LEADING: Second cook achieves 85% recipe accuracy score by Month 5 — Senior Cook/Owner','O2/KR2.1: Food cost ≤ 30% across all sites by Month 12 — COO, monthly P&L (linked to R03 supply risk)'],insight:'KR1.2 (SOP by Month 3) is the master leading indicator — if it slips, the entire expansion timeline pauses.',notes:'OKR quality score was 0.84 — passes the pivot gate. The SOP completion KR is the non-negotiable gate for all downstream actions.'},
+  {id:'s14',label:'Roadmap',agentId:'6.2',ac:'#00a060',type:'roadmap',phases:[{name:'Foundation',timeline:'Months 1–4',items:['Kitchen SOP complete on video (M3)','Apprentice hired and training begins (M1)','Butcher fixed-price contract signed (M2)']},{name:'Pilot',timeline:'Months 5–11',items:['Wong Tai Sin lease signed (M5)','Site 1 fit-out and launch (M9)','OpenRice + WhatsApp Business live (M6)']},{name:'Scale',timeline:'Months 12–18',items:['Kwun Tong lease signed (M12)','Site 2 opens with heritage installation (M18)','Foodpanda radius extended to 2.5km (M13)']}],notes:'One hard gate: SOP complete + second cook trained before Wong Tai Sin lease is signed. No exceptions — this is the go/no-go criterion.'},
+  {id:'s15',label:'Recommendation',agentId:'6.2',ac:'#00a060',type:'closing',headline:'Document the recipe. Train the successor. Then expand.',bullets:['This week: the owner starts 4 hours/week of kitchen SOP documentation — film every wonton-rolling technique, every broth timing, every assembly step','Month 1: hire an apprentice cook and begin training under the senior cook — this is the succession plan and the expansion plan in one action','Month 2: lock the wet market butcher into a 6-month fixed-price contract and counter-offer the landlord with a 3-year fixed lease on the Sham Shui Po store'],cta:'This week: open a shared Google Doc titled "麵王 Kitchen SOP" and film the first wonton-rolling session.',notes:'Close by returning to the grandmother\'s recipe. The entire strategy is in service of one thing: ensuring her wonton technique survives and reaches two more neighbourhoods.'},
+];
+
+let pcur=0;let notesShown=false;
+
+function buildPresRail(){
+  document.getElementById('pres-rail').innerHTML=SLIDES.map((s,i)=>{
+    const on=i===pcur;
+    return`<div class="pthumb${on?' on':''}" style="--thumb-ac:${s.ac}" onclick="pgo_abs(${i})">
+      <div class="pthumb-n">${String(i+1).padStart(2,'0')}</div>
+      <div class="pthumb-l">${s.label}</div>
+    </div>`;
+  }).join('');
+}
+
+function buildSlide(){
+  const s=SLIDES[pcur];const ac=s.ac;
+  const canvas=document.getElementById('pres-canvas');
+  let html='';
+
+  if(s.type==='title'){
+    html=`<div class="slide" style="background:linear-gradient(135deg,${h2r(ac,0.07)} 0%,#fff 100%);border-color:${h2r(ac,0.2)};padding:38px 48px;min-height:264px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-44px;right:-44px;width:160px;height:160px;border-radius:50%;background:${h2r(ac,0.05)};border:1px solid ${h2r(ac,0.09)}"></div>
+      <div style="position:absolute;top:14px;right:48px;font-size:8px;color:#bbb;letter-spacing:2px;text-transform:uppercase">MGMT5410 · Group 13 · HKUST</div>
+      <div style="width:32px;height:2px;background:${ac};border-radius:1px;margin-bottom:16px"></div>
+      <div style="font-size:8px;letter-spacing:3px;color:${ac};text-transform:uppercase;font-weight:600;margin-bottom:8px">QSR Strategic Expansion · Hong Kong · 2025</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:34px;color:#1a1a1a;line-height:1.08;margin-bottom:10px">${s.title}</div>
+      <div style="font-size:12px;color:#666;line-height:1.55;max-width:440px">${s.subtitle}</div>
+      <div style="margin-top:24px;padding-top:12px;border-top:1px solid #e8e5e0;font-size:8px;color:#bbb;letter-spacing:1px;display:flex;gap:16px"><span>13 Agent AI Chain</span><span>·</span><span>15 Slides</span><span>·</span><span>Conservative Expansion Plan</span></div>
+    </div>`;
+  } else if(s.type==='swot'&&s.swotData){
+    const Q=[{k:'strengths',l:'Strengths',c:'#00a060',bg:h2r('#00a060',0.06),bc:h2r('#00a060',0.17)},{k:'weaknesses',l:'Weaknesses',c:'#c97c10',bg:h2r('#c97c10',0.06),bc:h2r('#c97c10',0.17)},{k:'opportunities',l:'Opportunities',c:'#1a3a5c',bg:h2r('#1a3a5c',0.05),bc:h2r('#1a3a5c',0.14)},{k:'threats',l:'Threats',c:'#9b2335',bg:h2r('#9b2335',0.05),bc:h2r('#9b2335',0.13)}];
+    html=`<div class="slide" style="padding:24px 30px;min-height:264px">
+      <div style="font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:${ac};font-weight:700;margin-bottom:5px">${s.label}</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:20px;color:#1a1a1a">SWOT Matrix</div>
+      <div style="width:28px;height:2px;background:${ac};border-radius:1px;margin-top:8px;margin-bottom:14px"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${Q.map(({k,l,c,bg,bc})=>`
+        <div style="background:${bg};border:1px solid ${bc};border-radius:7px;padding:10px 12px">
+          <div style="font-size:7px;letter-spacing:2px;text-transform:uppercase;color:${c};font-weight:700;margin-bottom:7px">${l}</div>
+          ${(s.swotData[k]||[]).map(it=>`<div style="display:flex;gap:5px;margin-bottom:4px;align-items:flex-start"><div style="width:3px;height:3px;border-radius:50%;background:${c};margin-top:4px;flex-shrink:0"></div><div style="font-size:10px;color:#333;line-height:1.4">${it}</div></div>`).join('')}
+        </div>`).join('')}
+      </div>
+    </div>`;
+  } else if(s.type==='roadmap'&&s.phases){
+    html=`<div class="slide" style="padding:24px 30px;min-height:264px">
+      <div style="font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:${ac};font-weight:700;margin-bottom:5px">${s.label}</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:20px;color:#1a1a1a">Implementation Roadmap</div>
+      <div style="width:28px;height:2px;background:${ac};border-radius:1px;margin-top:8px;margin-bottom:16px"></div>
+      <div style="display:flex;gap:14px;position:relative">
+        <div style="position:absolute;top:7px;left:7px;right:7px;height:2px;background:linear-gradient(90deg,${ac},${h2r(ac,0.25)});z-index:0"></div>
+        ${s.phases.map((ph,i)=>`<div style="flex:1;position:relative;z-index:1">
+          <div style="width:13px;height:13px;border-radius:50%;background:${i===0?ac:h2r(ac,0.4)};border:2px solid #f5f4f0;margin-bottom:8px"></div>
+          <div style="font-size:7px;letter-spacing:2px;text-transform:uppercase;color:${ac};font-weight:700;margin-bottom:2px">${ph.name}</div>
+          <div style="font-size:9px;color:#888;margin-bottom:7px">${ph.timeline}</div>
+          ${ph.items.map(it=>`<div style="display:flex;gap:5px;margin-bottom:5px;align-items:flex-start"><div style="width:3px;height:3px;border-radius:50%;background:#bbb;margin-top:3px;flex-shrink:0"></div><div style="font-size:10px;color:#444;line-height:1.4">${it}</div></div>`).join('')}
+        </div>`).join('')}
+      </div>
+    </div>`;
+  } else if(s.type==='closing'){
+    html=`<div class="slide" style="background:linear-gradient(135deg,${h2r(ac,0.07)} 0%,#fff 100%);border-color:${h2r(ac,0.18)};padding:36px 44px;min-height:264px;display:flex;flex-direction:column;justify-content:center">
+      <div style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:${ac};font-weight:600;margin-bottom:9px">Strategic Recommendation</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:24px;color:#1a1a1a;line-height:1.2;margin-bottom:16px;max-width:480px">${s.headline}</div>
+      ${(s.bullets||[]).map((b,i)=>`<div style="display:flex;gap:10px;margin-bottom:9px;align-items:flex-start">
+        <div style="width:18px;height:18px;border-radius:4px;background:${h2r(ac,0.1)};border:1px solid ${h2r(ac,0.2)};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="font-size:9px;color:${ac};font-weight:700">${i+1}</div>
+        </div>
+        <div style="font-size:11px;color:#333;line-height:1.6">${b}</div>
+      </div>`).join('')}
+      ${s.cta?`<div style="padding-top:12px;border-top:1px solid #e8e5e0;margin-top:10px">
+        <div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#888;margin-bottom:4px">First action this week</div>
+        <div style="font-size:12px;color:${ac};font-weight:500">${s.cta}</div>
+      </div>`:''}
+    </div>`;
+  } else {
+    html=`<div class="slide" style="padding:24px 30px;min-height:264px">
+      <div style="font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:${ac};font-weight:700;margin-bottom:5px">${s.label}</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:20px;color:#1a1a1a">${s.label}</div>
+      <div style="width:28px;height:2px;background:${ac};border-radius:1px;margin-top:8px;margin-bottom:14px"></div>
+      ${(s.bullets||[]).map((b,i)=>`<div style="display:flex;gap:10px;margin-bottom:9px;align-items:flex-start">
+        <div style="width:18px;height:18px;border-radius:4px;background:${h2r(ac,0.08)};border:1px solid ${h2r(ac,0.18)};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="font-size:9px;color:${ac};font-weight:700">${i+1}</div>
+        </div>
+        <div style="font-size:11px;color:#333;line-height:1.6">${b}</div>
+      </div>`).join('')}
+      ${s.insight?`<div style="background:${h2r(ac,0.06)};border:1px solid ${h2r(ac,0.17)};border-radius:7px;padding:9px 12px;margin-top:10px">
+        <div style="font-size:7px;letter-spacing:2px;text-transform:uppercase;color:${ac};font-weight:700;margin-bottom:3px">Key insight</div>
+        <div style="font-size:11px;color:#444;line-height:1.55;font-style:italic">${s.insight}</div>
+      </div>`:''}
+    </div>`;
+  }
+  canvas.innerHTML=html;
+}
+
+function buildPresProgress(){
+  const pct=SLIDES.length>1?Math.round((pcur/(SLIDES.length-1))*100):0;
+  const ac=SLIDES[pcur].ac;
+  document.getElementById('ppbar').style.width=pct+'%';
+  document.getElementById('ppbar').style.background=ac;
+  document.getElementById('pcounter').textContent=`${pcur+1} / ${SLIDES.length}`;
+  const pb=document.getElementById('pprev');
+  const pn=document.getElementById('pnext');
+  pb.style.opacity=pcur===0?'0.4':'1';
+  const last=pcur===SLIDES.length-1;
+  pn.style.background=last?'#ddd':ac;
+  pn.style.color=last?'#aaa':'#fff';
+  pn.style.cursor=last?'not-allowed':'pointer';
+  if(notesShown){document.getElementById('notes-txt').textContent=SLIDES[pcur].notes||'';}
+  document.querySelector('.pres-rail').querySelectorAll('.pthumb').forEach((t,i)=>{
+    t.classList.toggle('on',i===pcur);
+    t.style.setProperty('--thumb-ac',SLIDES[i].ac);
+  });
+  const activeThumb=document.querySelector('.pres-rail').querySelectorAll('.pthumb')[pcur];
+  if(activeThumb) activeThumb.scrollIntoView({block:'nearest'});
+}
+
+function pgo(dir){pcur=Math.max(0,Math.min(SLIDES.length-1,pcur+dir));buildSlide();buildPresProgress();}
+function pgo_abs(i){pcur=i;buildSlide();buildPresProgress();}
+function toggleNotes(){
+  notesShown=!notesShown;
+  const panel=document.getElementById('pres-notes');
+  panel.style.display=notesShown?'block':'none';
+  document.getElementById('notesToggle').style.background=notesShown?'var(--bg)':'transparent';
+  if(notesShown)document.getElementById('notes-txt').textContent=SLIDES[pcur].notes||'';
+}
+
+document.addEventListener('keydown',e=>{
+  const presOn=document.getElementById('pres-view').classList.contains('on');
+  if(!presOn)return;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')pgo(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')pgo(-1);
+});
+
+buildPresRail();
+buildSlide();
+buildPresProgress();
+</script>
